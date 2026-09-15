@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: notification-service
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/notification_db}
+    username: ${DATABASE_USER:postgres}
+    password: ${DATABASE_PASSWORD:1234}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:admin}
+    password: ${RABBITMQ_PASSWORD:admin}
+
+server:
+  port: 8083
