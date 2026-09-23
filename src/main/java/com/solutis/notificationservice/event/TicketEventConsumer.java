@@ -15,7 +15,7 @@ public class TicketEventConsumer {
     @RabbitListener(
             queues = "ticket.created.queue"
     )
-    public void consume(TicketCreatedEvent event) {
+    public void consumeCreated(TicketCreatedEvent event) {
 
         Notification notification = Notification.builder()
                 .ticketId(event.ticketId())
@@ -24,6 +24,46 @@ public class TicketEventConsumer {
                         "Chamado criado: " + event.title()
                 )
                 .eventType("TicketCreated")
+                .build();
+
+        notificationRepository.save(notification);
+    }
+
+    @RabbitListener(
+            queues = "ticket.assigned.queue"
+    )
+    public void consumeAssigned(TicketAssignedEvent event) {
+
+        Notification notification = Notification.builder()
+                .ticketId(event.ticketId())
+                .customerId(event.customerId())
+                .message(
+                        "Chamado atribuído a um técnico."
+                )
+                .eventType("TicketAssigned")
+                .build();
+
+        notificationRepository.save(notification);
+    }
+
+    @RabbitListener(
+            queues = "ticket.status-changed.queue"
+    )
+    public void consumeStatusChanged(
+            TicketStatusChangedEvent event
+    ) {
+
+        Notification notification = Notification.builder()
+                .ticketId(event.ticketId())
+                .customerId(event.customerId())
+                .message(
+                        "Status alterado de "
+                                + event.previousStatus()
+                                + " para "
+                                + event.newStatus()
+                                + "."
+                )
+                .eventType("TicketStatusChanged")
                 .build();
 
         notificationRepository.save(notification);

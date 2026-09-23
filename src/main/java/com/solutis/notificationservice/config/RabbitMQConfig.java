@@ -12,8 +12,24 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfig {
 
     public static final String TICKET_EXCHANGE = "ticket.exchange";
-    public static final String TICKET_CREATED_QUEUE = "ticket.created.queue";
-    public static final String TICKET_CREATED_ROUTING_KEY = "ticket.created";
+
+    public static final String TICKET_CREATED_QUEUE =
+            "ticket.created.queue";
+
+    public static final String TICKET_ASSIGNED_QUEUE =
+            "ticket.assigned.queue";
+
+    public static final String TICKET_STATUS_CHANGED_QUEUE =
+            "ticket.status-changed.queue";
+
+    public static final String TICKET_CREATED_ROUTING_KEY =
+            "ticket.created";
+
+    public static final String TICKET_ASSIGNED_ROUTING_KEY =
+            "ticket.assigned";
+
+    public static final String TICKET_STATUS_CHANGED_ROUTING_KEY =
+            "ticket.status-changed";
 
     @Bean
     public TopicExchange ticketExchange() {
@@ -26,6 +42,16 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public Queue ticketAssignedQueue() {
+        return new Queue(TICKET_ASSIGNED_QUEUE, true);
+    }
+
+    @Bean
+    public Queue ticketStatusChangedQueue() {
+        return new Queue(TICKET_STATUS_CHANGED_QUEUE, true);
+    }
+
+    @Bean
     public Binding ticketCreatedBinding(
             Queue ticketCreatedQueue,
             TopicExchange ticketExchange
@@ -34,6 +60,28 @@ public class RabbitMQConfig {
                 .bind(ticketCreatedQueue)
                 .to(ticketExchange)
                 .with(TICKET_CREATED_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding ticketAssignedBinding(
+            Queue ticketAssignedQueue,
+            TopicExchange ticketExchange
+    ) {
+        return BindingBuilder
+                .bind(ticketAssignedQueue)
+                .to(ticketExchange)
+                .with(TICKET_ASSIGNED_ROUTING_KEY);
+    }
+
+    @Bean
+    public Binding ticketStatusChangedBinding(
+            Queue ticketStatusChangedQueue,
+            TopicExchange ticketExchange
+    ) {
+        return BindingBuilder
+                .bind(ticketStatusChangedQueue)
+                .to(ticketExchange)
+                .with(TICKET_STATUS_CHANGED_ROUTING_KEY);
     }
 
     @Bean
